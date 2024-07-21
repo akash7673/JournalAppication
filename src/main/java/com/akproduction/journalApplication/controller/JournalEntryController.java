@@ -67,10 +67,10 @@ public class JournalEntryController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/postJournal")
-    public ResponseEntity<JournalEntry> postJournalEntry(@RequestBody JournalEntry newEntry){
+    @PostMapping("/postJournal/{userName}")
+    public ResponseEntity<JournalEntry> postJournalEntry(@RequestBody JournalEntry newEntry, @PathVariable String userName){
         try{
-            journalEntryService.postJournalEntry(newEntry);
+            journalEntryService.postJournalEntry(newEntry, userName);
             return new ResponseEntity<JournalEntry>(newEntry, HttpStatus.CREATED);
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -87,15 +87,15 @@ public class JournalEntryController {
         }
     }
 
-    @DeleteMapping("deleteJournalById/{id}")
-    public ResponseEntity<?> deleteJournalById(@PathVariable ObjectId id){
-        journalEntryService.deleteJournalEntryById(id);
+    @DeleteMapping("deleteJournalById/{userName}/{id}")
+    public ResponseEntity<?> deleteJournalById(@PathVariable ObjectId id, @PathVariable String userName){
+        journalEntryService.deleteJournalEntryById(id, userName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
-    @PutMapping("updateJournalById/{id}")
-    public ResponseEntity<JournalEntry> updateJournalById(@PathVariable ObjectId id, @RequestBody JournalEntry updatedJournal){
+    @PutMapping("updateJournalById/{userName}/{id}")
+    public ResponseEntity<JournalEntry> updateJournalById(@PathVariable ObjectId id, @RequestBody JournalEntry updatedJournal, @PathVariable String userName){
         JournalEntry journalEntry = journalEntryService.getJournalEntryById(id).orElse(null);
         if(journalEntry != null){
             journalEntry.setContent(updatedJournal.getContent() != null && !updatedJournal.getContent().equals("") ? updatedJournal.getContent() : journalEntry.getContent());
